@@ -1,20 +1,24 @@
-﻿# [BMP280](https://github.com/qitas/BMP280) 
+﻿# [Bosch](https://github.com/Qitas/Bosch) 
 
-基于STM32单片机的BMP280传感器工程
+#### qitas@qitas.cn
 
-### qitas@qitas.cn
+## [简介](https://github.com/Qitas/Bosch/wiki)
 
----
+Bosch传感器驱动工程示例，基于cube MX灵活配置项目
 
-## 描述
+## [组成](qitas/)
 
+#### [项目文档](docs/)
 
+包括软硬件资源
 
-## 组成
+#### [项目资源](project/)
 
+包括源码工程
 
 ---
 
 ## 锻造最美之器
 
 [![sites](qitas/qitas.png)](http://www.qitas.cn)
+
