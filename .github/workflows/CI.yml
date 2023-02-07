@@ -1,0 +1,129 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - '**.c'
+      - '**.h'
+      - '**.yml'
+
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: "recursive"
+          fetch-depth: 1
+
+      - name: Install
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-arm-none-eabi cmake libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib git
+
+      - name: Checkout pico-sdk
+        uses: actions/checkout@v3
+        with:
+          repository: raspberrypi/pico-sdk
+          token: ${{ secrets.QITAS_TOCKEN }}
+          ref: develop
+          path: pico-sdk
+
+      - name: Checkout pico-sdk submodules
+        working-directory: pico-sdk
+        run: git submodule update --init
+
+      - name: Get core count
+        id: core_count
+        run : cat /proc/cpuinfo  | grep processor | wc -l
+
+      - name: demo logic
+        working-directory: RP2040/src/demo/logic
+        shell: bash
+        run: |
+          mkdir build && cd build
+          PICO_SDK_PATH=../../../../pico-sdk cmake ..
+          cmake .. && make
+
+      - name: demo probe
+        working-directory: RP2040/src/demo/probe
+        shell: bash
+        run: |
+          mkdir build && cd build
+          PICO_SDK_PATH=../../../../pico-sdk cmake ..
+          cmake .. && make
+
+      - name: demo extras
+        working-directory: RP2040/src/demo/extras
+        shell: bash
+        run: |
+          mkdir build && cd build
+          PICO_SDK_PATH=../../../../pico-sdk cmake ..
+          cmake .. && make
+
+      # - uses: actions/upload-artifact@v2
+      #   with:
+      #     name: pico-demo
+      #     path: src/demo/build
+
+  examples:
+    runs-on: ubuntu-latest #[self-hosted, Linux, X64] #
+    steps:
+      - name: Check out
+        uses: actions/checkout@v3
+        with:
+          submodules: "recursive"
+          fetch-depth: 1
+
+      - name: Checkout pico-sdk
+        uses: actions/checkout@v3
+        with:
+          repository: raspberrypi/pico-sdk
+          ref: develop
+          path: pico-sdk
+
+      - name: pico-sdk submodules
+        working-directory: pico-sdk
+        run: git submodule update --init
+
+      - name: Install
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-arm-none-eabi cmake libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib
+
+      - name: Build Environment
+        working-directory: RP2040/src/examples
+        shell: bash
+        run: |
+          mkdir build && cd build
+          PICO_SDK_PATH=../../../pico-sdk cmake ..
+          cmake .. && make
+
+      # - uses: actions/upload-artifact@v2
+      #   with:
+      #     name: pico-examples
+      #     path: src/examples/build
+
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: "recursive"
+          fetch-depth: 1
+
+      - name: actions-rs
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          target: thumbv6m-none-eabi
+          override: true
+
+      - name: rp2040-pac build
+        working-directory: RP2040/src/template/rp2040-pac
+        run: |
+          cargo build --release

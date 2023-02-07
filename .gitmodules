@@ -1,0 +1,3 @@
+[submodule "RP2040"]
+	path = RP2040
+	url = git@github.com:SoCXin/RP2040.git
