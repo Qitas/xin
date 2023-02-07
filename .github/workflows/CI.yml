@@ -16,7 +16,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.QITAS_TOCKEN }}
           submodules: "recursive"
           fetch-depth: 1
 
