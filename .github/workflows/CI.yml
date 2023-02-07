@@ -32,21 +32,21 @@ jobs:
 
       - name: Install
         run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc-arm-none-eabi cmake libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib
+          sudo apt update
+          sudo apt install -y gcc-arm-none-eabi cmake libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib
 
-      - name: Build Environment
+      - name: Build
         working-directory: RP2040/src/examples
         shell: bash
         run: |
           mkdir build && cd build
-          PICO_SDK_PATH=../../../pico-sdk cmake ..
+          PICO_SDK_PATH=../../pico-sdk cmake ..
           cmake .. && make
 
-      # - uses: actions/upload-artifact@v2
-      #   with:
-      #     name: pico-examples
-      #     path: src/examples/build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: examples
+          path: RP2040/src/examples/build
 
   rust:
     runs-on: ubuntu-latest
