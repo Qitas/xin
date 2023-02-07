@@ -16,6 +16,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
+          token: ${{ secrets.QITAS_TOCKEN }}
           submodules: "recursive"
           fetch-depth: 1
 
@@ -30,7 +31,7 @@ jobs:
           repository: raspberrypi/pico-sdk
           token: ${{ secrets.QITAS_TOCKEN }}
           ref: develop
-          path: pico-sdk
+          path: RP2040/pico-sdk
 
       - name: Checkout pico-sdk submodules
         working-directory: pico-sdk
@@ -83,7 +84,7 @@ jobs:
         with:
           repository: raspberrypi/pico-sdk
           ref: develop
-          path: pico-sdk
+          path: RP2040/pico-sdk
 
       - name: pico-sdk submodules
         working-directory: pico-sdk
